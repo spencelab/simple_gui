@@ -1,4 +1,5 @@
 import sys
+import time
 import rclpy
 from rclpy.node import Node
 
@@ -20,7 +21,16 @@ class MyGuiNode(Node):
 
         # Define internal member variables
         self._count         = 0
+        self.countf         = 0
+        
+        # Setup timer to do stuff.
+        self.create_timer(1,self.timer_callback)
+        self.get_logger().info("Added timer - slowstuff.")
 
+        # Setup timer to do stuff.
+        self.create_timer(0.01,self.timer_callback_fast)
+        self.get_logger().info("Added timer - faststuff.")
+        
         # Sanity check
         self.get_logger().info("Node set up properly.")
 
@@ -51,4 +61,11 @@ class MyGuiNode(Node):
         self.get_logger().info(f"[Subscriber] I heard: {temp}")
         self.ui.label_subscriber.setText(f"{msg.data}")
 
-
+    def timer_callback(self):
+        self.get_logger().info("Working in the background...")
+        
+    def timer_callback_fast(self):
+        self.countf = self.countf+1
+        if self.countf % 100 == 0:
+            self.get_logger().info("Done 100 fast iters...")        
+        
